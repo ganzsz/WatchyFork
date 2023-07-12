@@ -348,7 +348,8 @@ void Watchy::showAbout() {
   display.print(hours);
   display.print("h");
   display.print(minutes);
-  display.print("m");    
+  display.println("m");
+  display.println("Hoi Hans");
   display.display(false); // full refresh
 
   guiState = APP_STATE;
@@ -625,65 +626,6 @@ void Watchy::drawWatchFace() {
   display.println(currentTime.Minute);
 }
 
-weatherData Watchy::getWeatherData() {
-  return getWeatherData(settings.cityID, settings.weatherUnit,
-                        settings.weatherLang, settings.weatherURL,
-                        settings.weatherAPIKey, settings.weatherUpdateInterval);
-}
-
-weatherData Watchy::getWeatherData(String cityID, String units, String lang,
-                                   String url, String apiKey,
-                                   uint8_t updateInterval) {
-  currentWeather.isMetric = units == String("metric");
-  if (weatherIntervalCounter < 0) { //-1 on first run, set to updateInterval
-    weatherIntervalCounter = updateInterval;
-  }
-  if (weatherIntervalCounter >=
-      updateInterval) { // only update if WEATHER_UPDATE_INTERVAL has elapsed
-                        // i.e. 30 minutes
-    if (connectWiFi()) {
-      HTTPClient http; // Use Weather API for live data if WiFi is connected
-      http.setConnectTimeout(3000); // 3 second max timeout
-      String weatherQueryURL = url + cityID + String("&units=") + units +
-                               String("&lang=") + lang + String("&appid=") +
-                               apiKey;
-      http.begin(weatherQueryURL.c_str());
-      int httpResponseCode = http.GET();
-      if (httpResponseCode == 200) {
-        String payload             = http.getString();
-        JSONVar responseObject     = JSON.parse(payload);
-        currentWeather.temperature = int(responseObject["main"]["temp"]);
-        currentWeather.weatherConditionCode =
-            int(responseObject["weather"][0]["id"]);
-        currentWeather.weatherDescription =
-	  JSONVar::stringify(responseObject["weather"][0]["main"]);
-	    currentWeather.external = true;
-        // sync NTP during weather API call and use timezone of city
-        gmtOffset = int(responseObject["timezone"]);
-        syncNTP(gmtOffset);
-      } else {
-        // http error
-      }
-      http.end();
-      // turn off radios
-      WiFi.mode(WIFI_OFF);
-      btStop();
-    } else { // No WiFi, use internal temperature sensor
-      uint8_t temperature = sensor.readTemperature(); // celsius
-      if (!currentWeather.isMetric) {
-        temperature = temperature * 9. / 5. + 32.; // fahrenheit
-      }
-      currentWeather.temperature          = temperature;
-      currentWeather.weatherConditionCode = 800;
-      currentWeather.external             = false;
-    }
-    weatherIntervalCounter = 0;
-  } else {
-    weatherIntervalCounter++;
-  }
-  return currentWeather;
-}
-
 float Watchy::getBatteryVoltage() {
   if (RTC.rtcType == DS3231) {
     return analogReadMilliVolts(BATT_ADC_PIN) / 1000.0f *
@@ -895,89 +837,89 @@ void Watchy::showUpdateFW() {
 }
 
 void Watchy::updateFWBegin() {
-  display.setFullWindow();
-  display.fillScreen(GxEPD_BLACK);
-  display.setFont(&FreeMonoBold9pt7b);
-  display.setTextColor(GxEPD_WHITE);
-  display.setCursor(0, 30);
-  display.println("Bluetooth Started");
-  display.println(" ");
-  display.println("Watchy BLE OTA");
-  display.println(" ");
-  display.println("Waiting for");
-  display.println("connection...");
-  display.display(false); // full refresh
+  // display.setFullWindow();
+  // display.fillScreen(GxEPD_BLACK);
+  // display.setFont(&FreeMonoBold9pt7b);
+  // display.setTextColor(GxEPD_WHITE);
+  // display.setCursor(0, 30);
+  // display.println("Bluetooth Started");
+  // display.println(" ");
+  // display.println("Watchy BLE OTA");
+  // display.println(" ");
+  // display.println("Waiting for");
+  // display.println("connection...");
+  // display.display(false); // full refresh
 
-  BLE BT;
-  BT.begin("Watchy BLE OTA");
-  int prevStatus = -1;
-  int currentStatus;
+  // BLE BT;
+  // BT.begin("Watchy BLE OTA");
+  // int prevStatus = -1;
+  // int currentStatus;
 
-  while (1) {
-    currentStatus = BT.updateStatus();
-    if (prevStatus != currentStatus || prevStatus == 1) {
-      if (currentStatus == 0) {
-        display.setFullWindow();
-        display.fillScreen(GxEPD_BLACK);
-        display.setFont(&FreeMonoBold9pt7b);
-        display.setTextColor(GxEPD_WHITE);
-        display.setCursor(0, 30);
-        display.println("BLE Connected!");
-        display.println(" ");
-        display.println("Waiting for");
-        display.println("upload...");
-        display.display(false); // full refresh
-      }
-      if (currentStatus == 1) {
-        display.setFullWindow();
-        display.fillScreen(GxEPD_BLACK);
-        display.setFont(&FreeMonoBold9pt7b);
-        display.setTextColor(GxEPD_WHITE);
-        display.setCursor(0, 30);
-        display.println("Downloading");
-        display.println("firmware:");
-        display.println(" ");
-        display.print(BT.howManyBytes());
-        display.println(" bytes");
-        display.display(true); // partial refresh
-      }
-      if (currentStatus == 2) {
-        display.setFullWindow();
-        display.fillScreen(GxEPD_BLACK);
-        display.setFont(&FreeMonoBold9pt7b);
-        display.setTextColor(GxEPD_WHITE);
-        display.setCursor(0, 30);
-        display.println("Download");
-        display.println("completed!");
-        display.println(" ");
-        display.println("Rebooting...");
-        display.display(false); // full refresh
+  // while (1) {
+  //   currentStatus = BT.updateStatus();
+  //   if (prevStatus != currentStatus || prevStatus == 1) {
+  //     if (currentStatus == 0) {
+  //       display.setFullWindow();
+  //       display.fillScreen(GxEPD_BLACK);
+  //       display.setFont(&FreeMonoBold9pt7b);
+  //       display.setTextColor(GxEPD_WHITE);
+  //       display.setCursor(0, 30);
+  //       display.println("BLE Connected!");
+  //       display.println(" ");
+  //       display.println("Waiting for");
+  //       display.println("upload...");
+  //       display.display(false); // full refresh
+  //     }
+  //     if (currentStatus == 1) {
+  //       display.setFullWindow();
+  //       display.fillScreen(GxEPD_BLACK);
+  //       display.setFont(&FreeMonoBold9pt7b);
+  //       display.setTextColor(GxEPD_WHITE);
+  //       display.setCursor(0, 30);
+  //       display.println("Downloading");
+  //       display.println("firmware:");
+  //       display.println(" ");
+  //       display.print(BT.howManyBytes());
+  //       display.println(" bytes");
+  //       display.display(true); // partial refresh
+  //     }
+  //     if (currentStatus == 2) {
+  //       display.setFullWindow();
+  //       display.fillScreen(GxEPD_BLACK);
+  //       display.setFont(&FreeMonoBold9pt7b);
+  //       display.setTextColor(GxEPD_WHITE);
+  //       display.setCursor(0, 30);
+  //       display.println("Download");
+  //       display.println("completed!");
+  //       display.println(" ");
+  //       display.println("Rebooting...");
+  //       display.display(false); // full refresh
 
-        delay(2000);
-        esp_restart();
-      }
-      if (currentStatus == 4) {
-        display.setFullWindow();
-        display.fillScreen(GxEPD_BLACK);
-        display.setFont(&FreeMonoBold9pt7b);
-        display.setTextColor(GxEPD_WHITE);
-        display.setCursor(0, 30);
-        display.println("BLE Disconnected!");
-        display.println(" ");
-        display.println("exiting...");
-        display.display(false); // full refresh
-        delay(1000);
-        break;
-      }
-      prevStatus = currentStatus;
-    }
-    delay(100);
-  }
+  //       delay(2000);
+  //       esp_restart();
+  //     }
+  //     if (currentStatus == 4) {
+  //       display.setFullWindow();
+  //       display.fillScreen(GxEPD_BLACK);
+  //       display.setFont(&FreeMonoBold9pt7b);
+  //       display.setTextColor(GxEPD_WHITE);
+  //       display.setCursor(0, 30);
+  //       display.println("BLE Disconnected!");
+  //       display.println(" ");
+  //       display.println("exiting...");
+  //       display.display(false); // full refresh
+  //       delay(1000);
+  //       break;
+  //     }
+  //     prevStatus = currentStatus;
+  //   }
+  //   delay(100);
+  // }
 
-  // turn off radios
-  WiFi.mode(WIFI_OFF);
-  btStop();
-  showMenu(menuIndex, false);
+  // // turn off radios
+  // WiFi.mode(WIFI_OFF);
+  // btStop();
+  // showMenu(menuIndex, false);
 }
 
 void Watchy::showSyncNTP() {

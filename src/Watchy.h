@@ -1,3 +1,8 @@
+/**
+ * May be updated with fancy things by maninclude 
+ * 
+ * 
+ */
 #ifndef WATCHY_H
 #define WATCHY_H
 
@@ -13,7 +18,7 @@
 #include "DSEG7_Classic_Bold_53.h"
 #include "Display.h"
 #include "WatchyRTC.h"
-#include "BLE.h"
+// #include "BLE.h"
 #include "bma.h"
 #include "config.h"
 
@@ -69,9 +74,6 @@ public:
   void setTime();
   void setupWifi();
   bool connectWiFi();
-  weatherData getWeatherData();
-  weatherData getWeatherData(String cityID, String units, String lang,
-                             String url, String apiKey, uint8_t updateInterval);
   void updateFWBegin();
 
   void showWatchFace(bool partialRefresh);

@@ -7,8 +7,8 @@
 //pins
 #if !defined(ARDUINO_WATCHY_V10) && !defined(ARDUINO_WATCHY_V15) && !defined(ARDUINO_WATCHY_V20)
 
-#pragma message "Please install the latest ESP32 Arduino Core (2.0.5+) and choose Watchy as the target board"
-#pragma message "Hardware revision is not defined at the project level, please define in config.h. Defaulting to ARDUINO_WATCHY_V20"
+// #pragma message "Please install the latest ESP32 Arduino Core (2.0.5+) and choose Watchy as the target board"
+// #pragma message "Hardware revision is not defined at the project level, please define in config.h. Defaulting to ARDUINO_WATCHY_V20"
 
 //Change to your board version
 #define ARDUINO_WATCHY_V20
