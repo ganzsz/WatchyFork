@@ -1,6 +1,10 @@
+#pragma once
+
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the
 // correct version!
+// #ifndef _DSEG7_CLASSIC_BOLD_53_H
+// #define _DSEG7_CLASSIC_BOLD_53_H
 const uint8_t DSEG7_Classic_Bold_53Bitmaps[] PROGMEM = {
 
     // Bitmap Data:
@@ -1402,3 +1406,5 @@ const GFXglyph DSEG7_Classic_Bold_53Glyphs[] PROGMEM = {
 const GFXfont DSEG7_Classic_Bold_53 PROGMEM = {
     (uint8_t *)DSEG7_Classic_Bold_53Bitmaps,
     (GFXglyph *)DSEG7_Classic_Bold_53Glyphs, 0x20, 0x7E, 58};
+
+// #endif //_DSEG7_CLASSIC_BOLD_53_H
