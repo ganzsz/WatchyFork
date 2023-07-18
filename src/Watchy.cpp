@@ -16,6 +16,16 @@ RTC_DATA_ATTR long gmtOffset = 0;
 RTC_DATA_ATTR bool alreadyInMenu         = true;
 RTC_DATA_ATTR tmElements_t bootTime;
 
+Watchy::Watchy(const watchySettings &s) : settings(s) {
+  menuPages[0] = std::bind(&Watchy::showAbout, this);
+  menuPages[1] = std::bind(&Watchy::showBuzz, this);
+  menuPages[2] = std::bind(&Watchy::showAccelerometer, this);
+  menuPages[3] = std::bind(&Watchy::setTime, this);
+  menuPages[4] = std::bind(&Watchy::setupWifi, this);
+  menuPages[5] = std::bind(&Watchy::showUpdateFW, this);
+  menuPages[6] = std::bind(&Watchy::showSyncNTP, this);
+}
+
 void Watchy::init(String datetime) {
   esp_sleep_wakeup_cause_t wakeup_reason;
   wakeup_reason = esp_sleep_get_wakeup_cause(); // get wake up reason
@@ -105,30 +115,8 @@ void Watchy::handleButtonPress() {
       showMenu(menuIndex, false);
     } else if (guiState ==
                MAIN_MENU_STATE) { // if already in menu, then select menu item
-      switch (menuIndex) {
-      case 0:
-        showAbout();
-        break;
-      case 1:
-        showBuzz();
-        break;
-      case 2:
-        showAccelerometer();
-        break;
-      case 3:
-        setTime();
-        break;
-      case 4:
-        setupWifi();
-        break;
-      case 5:
-        showUpdateFW();
-        break;
-      case 6:
-        showSyncNTP();
-        break;
-      default:
-        break;
+      if(menuIndex <= MENU_PAGES_LENGTH) {
+        menuPages[menuIndex]();
       }
     } else if (guiState == FW_UPDATE_STATE) {
       updateFWBegin();
@@ -187,30 +175,8 @@ void Watchy::handleButtonPress() {
         lastTimeout = millis();
         if (guiState ==
             MAIN_MENU_STATE) { // if already in menu, then select menu item
-          switch (menuIndex) {
-          case 0:
-            showAbout();
-            break;
-          case 1:
-            showBuzz();
-            break;
-          case 2:
-            showAccelerometer();
-            break;
-          case 3:
-            setTime();
-            break;
-          case 4:
-            setupWifi();
-            break;
-          case 5:
-            showUpdateFW();
-            break;
-          case 6:
-            showSyncNTP();
-            break;
-          default:
-            break;
+          if(menuIndex <= MENU_PAGES_LENGTH) {
+            menuPages[menuIndex]();
           }
         } else if (guiState == FW_UPDATE_STATE) {
           updateFWBegin();
@@ -349,7 +315,7 @@ void Watchy::showAbout() {
   display.print("h");
   display.print(minutes);
   display.println("m");
-  display.println("Hoi Hans");
+  display.println("Hoi Hans 2.1");
   display.display(false); // full refresh
 
   guiState = APP_STATE;

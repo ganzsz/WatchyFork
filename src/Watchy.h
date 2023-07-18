@@ -45,15 +45,18 @@ typedef struct watchySettings {
   bool vibrateOClock;
 } watchySettings;
 
+#define MENU_PAGES_LENGTH 7
+
 class Watchy {
 public:
   static WatchyRTC RTC;
   static GxEPD2_BW<WatchyDisplay, WatchyDisplay::HEIGHT> display;
   tmElements_t currentTime;
   watchySettings settings;
+  std::function<void (void)> menuPages[MENU_PAGES_LENGTH];
 
 public:
-  explicit Watchy(const watchySettings &s) : settings(s) {} // constructor
+  explicit Watchy(const watchySettings &s); // constructor
   void init(String datetime = "");
   void deepSleep();
   static void displayBusyCallback(const void *);
