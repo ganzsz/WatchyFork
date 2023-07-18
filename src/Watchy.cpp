@@ -216,6 +216,14 @@ void Watchy::handleButtonPress() {
   }
 }
 
+const char* Watchy::getMenuName(int index) {
+  const char *menuItems[] = {
+    "About Watchy", "Vibrate Motor", "Show Accelerometer",
+    "Set Time",     "Setup WiFi",    "Update Firmware",
+    "Sync NTP"};
+  return menuItems[index];
+}
+
 void Watchy::showMenu(byte menuIndex, bool partialRefresh) {
   display.setFullWindow();
   display.fillScreen(GxEPD_BLACK);
@@ -225,21 +233,18 @@ void Watchy::showMenu(byte menuIndex, bool partialRefresh) {
   uint16_t w, h;
   int16_t yPos;
 
-  const char *menuItems[] = {
-      "About Watchy", "Vibrate Motor", "Show Accelerometer",
-      "Set Time",     "Setup WiFi",    "Update Firmware",
-      "Sync NTP"};
   for (int i = 0; i < MENU_LENGTH; i++) {
+    auto menuName = getMenuName(i);
     yPos = MENU_HEIGHT + (MENU_HEIGHT * i);
     display.setCursor(0, yPos);
     if (i == menuIndex) {
-      display.getTextBounds(menuItems[i], 0, yPos, &x1, &y1, &w, &h);
+      display.getTextBounds(menuName, 0, yPos, &x1, &y1, &w, &h);
       display.fillRect(x1 - 1, y1 - 10, 200, h + 15, GxEPD_WHITE);
       display.setTextColor(GxEPD_BLACK);
-      display.println(menuItems[i]);
+      display.println(menuName);
     } else {
       display.setTextColor(GxEPD_WHITE);
-      display.println(menuItems[i]);
+      display.println(menuName);
     }
   }
 
@@ -258,21 +263,18 @@ void Watchy::showFastMenu(byte menuIndex) {
   uint16_t w, h;
   int16_t yPos;
 
-  const char *menuItems[] = {
-      "About Watchy", "Vibrate Motor", "Show Accelerometer",
-      "Set Time",     "Setup WiFi",    "Update Firmware",
-      "Sync NTP"};
   for (int i = 0; i < MENU_LENGTH; i++) {
+    auto menuName = getMenuName(i);
     yPos = MENU_HEIGHT + (MENU_HEIGHT * i);
     display.setCursor(0, yPos);
     if (i == menuIndex) {
-      display.getTextBounds(menuItems[i], 0, yPos, &x1, &y1, &w, &h);
+      display.getTextBounds(menuName, 0, yPos, &x1, &y1, &w, &h);
       display.fillRect(x1 - 1, y1 - 10, 200, h + 15, GxEPD_WHITE);
       display.setTextColor(GxEPD_BLACK);
-      display.println(menuItems[i]);
+      display.println(menuName);
     } else {
       display.setTextColor(GxEPD_WHITE);
-      display.println(menuItems[i]);
+      display.println(menuName);
     }
   }
 
@@ -315,7 +317,7 @@ void Watchy::showAbout() {
   display.print("h");
   display.print(minutes);
   display.println("m");
-  display.println("Hoi Hans 2.1");
+  display.println("Hoi Hans 2.2");
   display.display(false); // full refresh
 
   guiState = APP_STATE;

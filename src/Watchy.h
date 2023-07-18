@@ -63,6 +63,7 @@ public:
   float getBatteryVoltage();
   void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
 
+  virtual const char* getMenuName(int index);
   virtual void handleButtonPress();
   void showMenu(byte menuIndex, bool partialRefresh);
   void showFastMenu(byte menuIndex);
