@@ -1,6 +1,8 @@
 #include "WatchyRTC.h"
 
-WatchyRTC::WatchyRTC() : rtc_ds(false) {}
+WatchyRTC::WatchyRTC() : rtc_ds(false) {
+  Rtcc_Addr = RTCC_R>>1;
+}
 
 void WatchyRTC::init() {
   byte error;
@@ -76,6 +78,53 @@ void WatchyRTC::set(tmElements_t tm) {
     rtc_pcf.setTime(tm.Hour, tm.Minute, tm.Second);
     clearAlarm();
   }
+}
+
+void WatchyRTC::stopAlarm() {
+  rtc_pcf.clearAlarm();
+}
+
+void WatchyRTC::updateStatus2(byte value) {
+  Wire.beginTransmission(Rtcc_Addr);
+  Wire.write(RTCC_STAT2_ADDR);
+  Wire.write(value);
+  Wire.endTransmission();
+}
+
+void WatchyRTC::setTimer() {
+  // Enable interrupt pin for timer
+  byte newStatus2 = RTCC_TIMER_TIE;
+  updateStatus2(newStatus2);
+  // count down from 64
+  Wire.beginTransmission(Rtcc_Addr);
+  Wire.write(RTCC_TIMER_ADDR + 1);
+  Wire.write(32);
+  Wire.endTransmission();
+  // enable timer and set freq to 64
+  Wire.beginTransmission(Rtcc_Addr);
+  Wire.write(RTCC_TIMER_ADDR);
+  Wire.write(RTCC_TIMER_ENABLED | RTCC_TIMER_FREQ_64);
+  Wire.endTransmission();
+}
+
+void WatchyRTC::clearTimer() {
+  // Disable interrupt pin for timer
+  byte newStatus2 = rtc_pcf.readStatus2() & ~RTCC_TIMER_TIE;
+  newStatus2 &= ~RTCC_TIMER_TF;
+  updateStatus2(newStatus2);
+  Wire.beginTransmission(Rtcc_Addr);
+  Wire.write(RTCC_TIMER_ADDR);
+  Wire.write(RTCC_TIMER_DISABLED | RTCC_TIMER_FREQ_min);
+  Wire.endTransmission();
+}
+
+byte WatchyRTC::getStatus(byte loc) {
+  Wire.beginTransmission(Rtcc_Addr);
+  Wire.write(loc);
+  Wire.endTransmission();
+
+  Wire.requestFrom(Rtcc_Addr, 1); //request 1 bytes
+  return Wire.read();
 }
 
 uint8_t WatchyRTC::temperature() {

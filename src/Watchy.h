@@ -58,7 +58,7 @@ public:
 public:
   explicit Watchy(const watchySettings &s); // constructor
   void init(String datetime = "");
-  void deepSleep();
+  virtual void deepSleep();
   static void displayBusyCallback(const void *);
   float getBatteryVoltage();
   void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);

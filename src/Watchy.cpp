@@ -47,7 +47,7 @@ void Watchy::init(String datetime) {
       if (settings.vibrateOClock) {
         if (currentTime.Minute == 0) {
           // The RTC wakes us up once per minute
-          vibMotor(75, 4);
+          // vibMotor(75, 4);
         }
       }
       break;
@@ -63,6 +63,7 @@ void Watchy::init(String datetime) {
     }
     break;
   case ESP_SLEEP_WAKEUP_EXT1: // button Press
+    // Serial.begin(9600);
     handleButtonPress();
     break;
   default: // reset
