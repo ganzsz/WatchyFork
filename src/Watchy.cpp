@@ -63,7 +63,6 @@ void Watchy::init(String datetime) {
     }
     break;
   case ESP_SLEEP_WAKEUP_EXT1: // button Press
-    // Serial.begin(9600);
     handleButtonPress();
     break;
   default: // reset
