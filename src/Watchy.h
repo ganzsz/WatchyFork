@@ -77,7 +77,7 @@ public:
   bool syncNTP(long gmt, String ntpServer);
   void setTime();
   void setupWifi();
-  bool connectWiFi();
+  virtual bool connectWiFi();
   void updateFWBegin();
 
   void showWatchFace(bool partialRefresh);
