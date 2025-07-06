@@ -61,6 +61,7 @@ public:
   virtual void deepSleep();
   static void displayBusyCallback(const void *);
   float getBatteryVoltage();
+  float getBatteryPercentage();
   void vibMotor(uint8_t intervalMs = 100, uint8_t length = 20);
 
   virtual const char* getMenuName(int index);

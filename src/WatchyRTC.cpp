@@ -1,6 +1,6 @@
 #include "WatchyRTC.h"
 
-WatchyRTC::WatchyRTC() : rtc_ds(false) {
+WatchyRTC::WatchyRTC() {
   Rtcc_Addr = RTCC_R>>1;
 }
 

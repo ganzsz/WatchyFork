@@ -99,8 +99,10 @@ void Watchy::deepSleep() {
       continue;
     pinMode(i, INPUT);
   }
-  esp_sleep_enable_ext0_wakeup((gpio_num_t)RTC_INT_PIN,
-                               0); // enable deep sleep wake on RTC interrupt
+  if (getBatteryPercentage() > 0) {
+    esp_sleep_enable_ext0_wakeup((gpio_num_t)RTC_INT_PIN,
+                                  0); // enable deep sleep wake on RTC interrupt
+  }
   esp_sleep_enable_ext1_wakeup(
       BTN_PIN_MASK,
       ESP_EXT1_WAKEUP_ANY_HIGH); // enable deep sleep wake on button press
@@ -602,6 +604,10 @@ float Watchy::getBatteryVoltage() {
   } else {
     return analogReadMilliVolts(BATT_ADC_PIN) / 1000.0f * 2.0f;
   }
+}
+
+float Watchy::getBatteryPercentage() {
+  return (getBatteryVoltage()-3.3)/0.9;
 }
 
 uint16_t Watchy::_readRegister(uint8_t address, uint8_t reg, uint8_t *data,
